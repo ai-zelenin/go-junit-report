@@ -8,8 +8,6 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/yaml.v3"
-
 	"github.com/ai-zelenin/go-junit-report/v2/gtr"
 	"github.com/ai-zelenin/go-junit-report/v2/junit"
 	"github.com/ai-zelenin/go-junit-report/v2/parser/gotest"
@@ -22,15 +20,15 @@ type parser interface {
 
 // Config contains the go-junit-report command configuration.
 type Config struct {
-	Parser                string
-	Hostname              string
-	PackageName           string
-	SkipXMLHeader         bool
-	SubtestMode           gotest.SubtestMode
-	Properties            map[string]string
-	TimestampFunc         func() time.Time
-	RequiredCoverage      float64
-	CoverageOverwriteFile string
+	Parser           string
+	Hostname         string
+	PackageName      string
+	SkipXMLHeader    bool
+	SubtestMode      gotest.SubtestMode
+	Properties       map[string]string
+	TimestampFunc    func() time.Time
+	RequiredCoverage float64
+	UnitConfigs      map[string]*gtr.UnitCfg
 	// For debugging
 	PrintEvents bool
 }
@@ -39,21 +37,11 @@ type Config struct {
 func (c Config) Run(input io.Reader, output io.Writer) (*gtr.Report, error) {
 	var p parser
 	options := c.gotestOptions()
-	var coverOverwrite = make(map[string]float64)
-	if c.CoverageOverwriteFile != "" {
-		data, err := os.ReadFile(c.CoverageOverwriteFile)
-		if err != nil {
-			return nil, err
-		}
-		err = yaml.Unmarshal(data, &coverOverwrite)
-		if err != nil {
-			return nil, err
-		}
-	}
+	unitCfg := c.UnitConfigs
 	calcRequiredCover := func(packageName string) float64 {
-		over, ok := coverOverwrite[packageName]
-		if ok {
-			return over
+		cfg := unitCfg[packageName]
+		if cfg != nil {
+			return cfg.MinCover
 		}
 		return c.RequiredCoverage
 	}

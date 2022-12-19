@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+type UnitCfg struct {
+	MinCover       float64 `json:"min_cover" yaml:"min_cover"`
+	TolerateErrors bool    `json:"tolerate_errors" yaml:"tolerate_errors"`
+}
+
 // Result is the result of a test.
 type Result int
 
@@ -40,8 +45,14 @@ type Report struct {
 
 // IsSuccessful returns true if none of the packages in this report have build
 // or runtime errors and all tests passed without failures or were skipped.
-func (r *Report) IsSuccessful() bool {
+func (r *Report) IsSuccessful(cMap map[string]*UnitCfg) bool {
 	for _, pkg := range r.Packages {
+		cfg := cMap[pkg.Name]
+		if cfg != nil {
+			if cfg.TolerateErrors {
+				return true
+			}
+		}
 		if pkg.BuildError.Name != "" || pkg.RunError.Name != "" {
 			return false
 		}
