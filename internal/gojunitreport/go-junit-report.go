@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"gopkg.in/yaml.v3"
+
 	"github.com/ai-zelenin/go-junit-report/v2/gtr"
 	"github.com/ai-zelenin/go-junit-report/v2/junit"
 	"github.com/ai-zelenin/go-junit-report/v2/parser/gotest"
@@ -20,14 +22,15 @@ type parser interface {
 
 // Config contains the go-junit-report command configuration.
 type Config struct {
-	Parser           string
-	Hostname         string
-	PackageName      string
-	SkipXMLHeader    bool
-	SubtestMode      gotest.SubtestMode
-	Properties       map[string]string
-	TimestampFunc    func() time.Time
-	RequiredCoverage float64
+	Parser                string
+	Hostname              string
+	PackageName           string
+	SkipXMLHeader         bool
+	SubtestMode           gotest.SubtestMode
+	Properties            map[string]string
+	TimestampFunc         func() time.Time
+	RequiredCoverage      float64
+	CoverageOverwriteFile string
 	// For debugging
 	PrintEvents bool
 }
@@ -36,11 +39,31 @@ type Config struct {
 func (c Config) Run(input io.Reader, output io.Writer) (*gtr.Report, error) {
 	var p parser
 	options := c.gotestOptions()
+	var coverOverwrite = make(map[string]float64)
+	if c.CoverageOverwriteFile != "" {
+		data, err := os.ReadFile(c.CoverageOverwriteFile)
+		if err != nil {
+			return nil, err
+		}
+		err = yaml.Unmarshal(data, &coverOverwrite)
+		if err != nil {
+			return nil, err
+		}
+	}
+	calcRequiredCover := func(packageName string) float64 {
+		over, ok := coverOverwrite[packageName]
+		if ok {
+			return over
+		}
+		return c.RequiredCoverage
+	}
+
 	if c.RequiredCoverage > 0 {
 		var reqCoverHandler = gotest.WithEventHandler(func(e gotest.Event) error {
 			if e.Type == "summary" {
-				if e.CovPct < c.RequiredCoverage {
-					fmt.Printf("COVERAGE FAIL: %s is to low %.1f < %.1f \n", e.Name, e.CovPct, c.RequiredCoverage)
+				rc := calcRequiredCover(e.Name)
+				if e.CovPct < rc {
+					fmt.Printf("COVERAGE FAIL: %s is to low %.1f < %.1f \n", e.Name, e.CovPct, rc)
 				}
 			}
 			return nil
@@ -77,11 +100,12 @@ func (c Config) Run(input io.Reader, output io.Writer) (*gtr.Report, error) {
 	}
 	if c.RequiredCoverage > 0 {
 		for i, pp := range report.Packages {
-			if pp.Coverage < c.RequiredCoverage && pp.Name == "" && pp.BuildError.Name == "" {
-				desc := fmt.Sprintf("FAIL: %s %v %f < %f", pp.Name, gtr.ErrPackageCoverageIsTooLow, pp.Coverage, c.RequiredCoverage)
+			rc := calcRequiredCover(pp.Name)
+			if pp.Coverage < rc && pp.RunError.Name == "" && pp.BuildError.Name == "" {
+				desc := fmt.Sprintf("FAIL: %s %v %f < %f", pp.Name, gtr.ErrPackageCoverageIsTooLow, pp.Coverage, rc)
 				name := gtr.ErrPackageCoverageIsTooLow.Error()
 				report.Packages[i].RunError.Name = name
-				report.Packages[i].RunError.Cause = name
+				report.Packages[i].RunError.Cause = "lowCoverage"
 				report.Packages[i].RunError.Output = []string{desc}
 			}
 		}
