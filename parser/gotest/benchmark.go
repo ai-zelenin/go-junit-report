@@ -3,7 +3,7 @@ package gotest
 import (
 	"time"
 
-	"github.com/jstemmer/go-junit-report/v2/gtr"
+	"github.com/ai-zelenin/go-junit-report/v2/gtr"
 )
 
 const (

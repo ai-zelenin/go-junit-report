@@ -3,8 +3,8 @@ package gotest
 import (
 	"io"
 
-	"github.com/jstemmer/go-junit-report/v2/gtr"
-	"github.com/jstemmer/go-junit-report/v2/parser/gotest/internal/reader"
+	"github.com/ai-zelenin/go-junit-report/v2/gtr"
+	"github.com/ai-zelenin/go-junit-report/v2/parser/gotest/internal/reader"
 )
 
 // NewJSONParser returns a new Go test json output parser.

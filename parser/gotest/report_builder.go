@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jstemmer/go-junit-report/v2/gtr"
-	"github.com/jstemmer/go-junit-report/v2/parser/gotest/internal/collector"
+	"github.com/ai-zelenin/go-junit-report/v2/gtr"
+	"github.com/ai-zelenin/go-junit-report/v2/parser/gotest/internal/collector"
 )
 
 const (

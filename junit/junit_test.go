@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jstemmer/go-junit-report/v2/gtr"
+	"github.com/ai-zelenin/go-junit-report/v2/gtr"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -193,8 +193,8 @@ func TestWriteXML(t *testing.T) {
 
 	var suites Testsuites
 
-	ts := Testsuite{Name:"Example"}
-	ts.AddTestcase(Testcase{Name: "Test", })
+	ts := Testsuite{Name: "Example"}
+	ts.AddTestcase(Testcase{Name: "Test"})
 	suites.AddSuite(ts)
 
 	var buf bytes.Buffer
