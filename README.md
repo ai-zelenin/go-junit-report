@@ -3,9 +3,9 @@
 go-junit-report is a tool that converts [`go test`] output to a JUnit compatible
 XML report, suitable for use with applications such as [Jenkins].
 
-[![Build status](https://github.com/jstemmer/go-junit-report/actions/workflows/main.yml/badge.svg)](https://github.com/jstemmer/go-junit-report/actions)
-[![Go Reference](https://pkg.go.dev/badge/github.com/jstemmer/go-junit-report/v2.svg)](https://pkg.go.dev/github.com/jstemmer/go-junit-report/v2)
-[![Go Report Card](https://goreportcard.com/badge/github.com/jstemmer/go-junit-report/v2)](https://goreportcard.com/report/github.com/jstemmer/go-junit-report/v2)
+[![Build status](https://github.com/ai-zelenin/go-junit-report/actions/workflows/main.yml/badge.svg)](https://github.com/ai-zelenin/go-junit-report/actions)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ai-zelenin/go-junit-report/v2.svg)](https://pkg.go.dev/github.com/ai-zelenin/go-junit-report/v2)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ai-zelenin/go-junit-report/v2)](https://goreportcard.com/report/github.com/ai-zelenin/go-junit-report/v2)
 
 ## Install from package (recommended)
 
@@ -17,7 +17,7 @@ page.
 Download and install the latest stable version from source by running:
 
 ```bash
-go install github.com/jstemmer/go-junit-report/v2@latest
+go install github.com/ai-zelenin/go-junit-report/v2@latest
 ```
 
 ## Usage
@@ -66,18 +66,19 @@ go-junit-report -in tests.txt -iocopy -out report.xml
 
 Run `go-junit-report -help` for a list of all supported flags.
 
-| Flag                  | Description                                                                     |
-| --------------------  | -----------                                                                     |
-| `-in file`            | read go test log from `file`                                                    |
-| `-iocopy`             | copy input to stdout; can only be used in conjunction with -out                 |
-| `-no-xml-header`      | do not print xml header                                                         |
-| `-out file`           | write XML report to `file`                                                      |
-| `-package-name name`  | specify a default package name to use if output does not contain a package name |
-| `-parser parser`      | specify the parser to use, available parsers are: `gotest` (default), `gojson`  |
-| `-p key=value`        | add property to generated report; properties should be specified as `key=value` |
-| `-set-exit-code`      | set exit code to 1 if tests failed                                              |
-| `-subtest-mode`       | set subtest `mode`, modes are: `ignore-parent-results`, `exclude-parents`       |
-| `-version`            | print version and exit                                                          |
+| Flag                 | Description                                                                     |
+|----------------------|---------------------------------------------------------------------------------|
+| `-in file`           | read go test log from `file`                                                    |
+| `-iocopy`            | copy input to stdout; can only be used in conjunction with -out                 |
+| `-no-xml-header`     | do not print xml header                                                         |
+| `-out file`          | write XML report to `file`                                                      |
+| `-package-name name` | specify a default package name to use if output does not contain a package name |
+| `-parser parser`     | specify the parser to use, available parsers are: `gotest` (default), `gojson`  |
+| `-p key=value`       | add property to generated report; properties should be specified as `key=value` |
+| `-set-exit-code`     | set exit code to 1 if tests failed                                              |
+| `-rcover`            | required coverage                                                               |
+| `-subtest-mode`      | set subtest `mode`, modes are: `ignore-parent-results`, `exclude-parents`       |
+| `-version`           | print version and exit                                                          |
 
 ## Go packages
 
@@ -86,8 +87,8 @@ packages. This can be helpful if you want to use the `go test` output parser or
 create your own custom JUnit reports for example. See the package documentation
 on pkg.go.dev for more information:
 
-- [github.com/jstemmer/go-junit-report/v2/parser/gotest]
-- [github.com/jstemmer/go-junit-report/v2/junit]
+- [github.com/ai-zelenin/go-junit-report/v2/parser/gotest]
+- [github.com/ai-zelenin/go-junit-report/v2/junit]
 
 ## Changelog
 
@@ -119,8 +120,8 @@ See [CONTRIBUTING.md].
 
 [`go test`]: https://pkg.go.dev/cmd/go#hdr-Test_packages
 [Jenkins]: https://www.jenkins.io/
-[github.com/jstemmer/go-junit-report/v2/parser/gotest]: https://pkg.go.dev/github.com/jstemmer/go-junit-report/v2/parser/gotest
-[github.com/jstemmer/go-junit-report/v2/junit]: https://pkg.go.dev/github.com/jstemmer/go-junit-report/v2/junit
-[Releases]: https://github.com/jstemmer/go-junit-report/releases
+[github.com/ai-zelenin/go-junit-report/v2/parser/gotest]: https://pkg.go.dev/github.com/ai-zelenin/go-junit-report/v2/parser/gotest
+[github.com/ai-zelenin/go-junit-report/v2/junit]: https://pkg.go.dev/github.com/ai-zelenin/go-junit-report/v2/junit
+[Releases]: https://github.com/ai-zelenin/go-junit-report/releases
 [testing]: https://pkg.go.dev/testing
-[CONTRIBUTING.md]: https://github.com/jstemmer/go-junit-report/blob/master/CONTRIBUTING.md
+[CONTRIBUTING.md]: https://github.com/ai-zelenin/go-junit-report/blob/master/CONTRIBUTING.md

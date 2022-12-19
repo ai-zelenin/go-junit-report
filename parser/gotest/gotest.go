@@ -109,11 +109,17 @@ func SetSubtestMode(mode SubtestMode) Option {
 	}
 }
 
+func WithEventHandler(handleFunc func(e Event) error) Option {
+	return func(p *Parser) {
+		p.eventHandler = handleFunc
+	}
+}
+
 // Parser is a Go test output Parser.
 type Parser struct {
-	packageName string
-	subtestMode SubtestMode
-
+	packageName   string
+	subtestMode   SubtestMode
+	eventHandler  func(e Event) error
 	timestampFunc func() time.Time
 
 	events []Event
@@ -162,6 +168,12 @@ func (p *Parser) parse(r reader.LineReader) (gtr.Report, error) {
 
 		for _, ev := range evs {
 			ev.applyMetadata(metadata)
+			if p.eventHandler != nil {
+				err = p.eventHandler(ev)
+				if err != nil {
+					return gtr.Report{}, err
+				}
+			}
 			p.events = append(p.events, ev)
 		}
 	}

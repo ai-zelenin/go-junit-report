@@ -85,7 +85,9 @@ func (b *reportBuilder) ProcessEvent(ev Event) {
 	case "summary":
 		// The summary marks the end of a package. We can now create the actual
 		// package from all the events we've processed so far for this package.
-		b.packages = append(b.packages, b.CreatePackage(ev.Package, ev.Name, ev.Result, ev.Duration, ev.Data))
+		p := b.CreatePackage(ev.Package, ev.Name, ev.Result, ev.Duration, ev.Data)
+		p.Coverage = ev.CovPct
+		b.packages = append(b.packages, p)
 	case "coverage":
 		b.getPackageBuilder(ev.Package).Coverage(ev.CovPct, ev.CovPackages)
 	case "build_output":
