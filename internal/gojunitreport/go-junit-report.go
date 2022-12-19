@@ -77,7 +77,7 @@ func (c Config) Run(input io.Reader, output io.Writer) (*gtr.Report, error) {
 	}
 	if c.RequiredCoverage > 0 {
 		for i, pp := range report.Packages {
-			if pp.Coverage < c.RequiredCoverage {
+			if pp.Coverage < c.RequiredCoverage && pp.Name == "" && pp.BuildError.Name == "" {
 				desc := fmt.Sprintf("FAIL: %s %v %f < %f", pp.Name, gtr.ErrPackageCoverageIsTooLow, pp.Coverage, c.RequiredCoverage)
 				name := gtr.ErrPackageCoverageIsTooLow.Error()
 				report.Packages[i].RunError.Name = name
