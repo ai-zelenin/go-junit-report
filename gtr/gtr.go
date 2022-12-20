@@ -50,7 +50,7 @@ func (r *Report) IsSuccessful(cMap map[string]*UnitCfg) bool {
 		cfg := cMap[pkg.Name]
 		if cfg != nil {
 			if cfg.TolerateErrors {
-				return true
+				continue
 			}
 		}
 		if pkg.BuildError.Name != "" || pkg.RunError.Name != "" {
